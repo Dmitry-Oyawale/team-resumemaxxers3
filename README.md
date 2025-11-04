@@ -2,9 +2,9 @@
 # CS 3733 Term Project
 ### AWS Deployment URL: 
 ### Project Title: 
-### Team Name :  <enter your team name here> 
+### Team Name :  resumemaxxers
 ### Team Members 
 * Matvei Shestopalov
-* member 2
-* member 3
-* member 4
+* Ziyue Chen
+* Kevin Lai
+* Jim Xiang
