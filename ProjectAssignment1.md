@@ -352,6 +352,11 @@ You may use Figma to design your interface:
 
 <kbd><img src ="md-images/img_1.png"></img></kbd>
 
+<kbd><img src ="md-images/img_2.png"></img></kbd>
+
+<kbd><img src ="md-images/img_3.png"></img></kbd>
+
+
 ----
 # 4. Product Backlog
 
