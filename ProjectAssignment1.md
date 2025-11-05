@@ -1,6 +1,6 @@
 # Software Requirements and Use Cases
 
-## Your Project Title
+## Research Position Matcher
 --------
 Prepared by:
 
@@ -32,16 +32,14 @@ Prepared by:
 
 ## Document Revision History
 
-| Name | Date | Changes | Version |
-| ------ | ------ | --------- | --------- |
-|Revision 1 |2024-11-07 |Initial draft | 1.0        |
-|      |      |         |         |
-|      |      |         |         |
+| Name | Date       | Changes | Version |
+| ------ |------------| --------- | --------- |
+|Revision 1 | 2025-11-05 |Initial draft | 1.0        |
+|      |            |         |         |
+|      |            |         |         |
 
 ----
 # 1. Introduction
-
-Provide a short description of the software being specified. Describe its purpose, including relevant benefits, objectives, and goals.
 
 Our software facilitates an easier connection between faculty and students about research opportunities and positions, particularly those not teaching undergraduate classes.  Faculty can easily reach out to students interested in their respected major. This application dissolves the barrier between students and faculty in different degree levels, and ensures qualified sophomores and juniors the opportunity to utilize their talents fully and further their academic/professional career. Students also have the opportunity to explore various research topics aligned with their interests.
 
@@ -50,18 +48,12 @@ Our software facilitates an easier connection between faculty and students about
 ----
 # 2. Requirements Specification
 
-This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
-
 ## 2.1 Customer, Users, and Stakeholders
-
-A brief description of the customer, stakeholders, and users of your software.
 
 Customers/users include student and faculty that is part of the school organization who benefits from our software.
 
 ----
 ## 2.2 User Stories
-This section will include the user stories you identified for your project. Make sure to write your user stories in the form : 
-"As a **[Role]**, I want **[Feature]** so that **[Reason/Benefit]** "
 
 1. As a student, I would like to create my student account, so that I can maintain my personal and academic information accurately in the system.
 2. As a student, I want to login to the system by using my email and password or the SSO, so that I can securely access my account and manage my applications.
@@ -90,36 +82,6 @@ This section will include the user stories you identified for your project. Make
 
 ----
 ## 2.3 Use Cases
-
-This section will include the specification for your project in the form of use cases. 
-
-Group the related user stories and provide a use case for each user story group. You don't need to draw the use-case diagram for the use cases; you will only provide the textual descriptions.  **Also, you don't need to include the use cases for "registration" and "login" use cases for both student and faculty users.**
-
-  * First, provide a short description of the actors involved (e.g., regular user, administrator, etc.) and then follow with a list of the use cases.
-  * Then, for each use case, include the following:
-
-    * Name,
-    * Participating actors,
-    * Entry condition(s) (in what system state is this use case applicable),
-    * Exit condition(s) (what is the system state after the use case is done),
-    * Flow of events (how will the user interact with the system; list the user actions and the system responses to those),
-    * Alternative flow of events (what are the exceptional cases in the flow of events and they will be handles)
-    * Iteration # (which sprint do you plan to work on this use case) 
-
-Each use case should also have a field called "Iteration" where you specify in which iteration you plan to implement this feature.
-
-You may use the following table template for your use cases. Copy-paste this table for each use case you will include in your document.
-
-| Use case # 1      |   |
-| ------------------ |--|
-| Name              | ""  |
-| Participating actor  | ""  |
-| Entry condition(s)     | ""  |
-| Exit condition(s)           | ""  |
-| Flow of events | ""  |
-| Alternative flow of events    | ""  |
-| Iteration #         | ""  |
-
 
 | Use case # 1      |  |
 | ------------------ |--|
@@ -364,43 +326,13 @@ You may use Figma to design your interface:
 
 <kbd>Inbox (faculty): <img src ="md-images/inbox.png"></img></kbd>
 
+<kbd>Open positions (student): <img src ="md-images/open_positions.png"></img></kbd>
+
 
 ----
 # 4. Product Backlog
-
-Here you should include a link to your GitHub repo issues page, i.e., your product backlog. Make sure to create an issue for each user story.  
 
 https://github.com/WPI-CS3733-2025B/team-resumemaxxers/issues
 
 ----
 # 5. References
-
-Cite your references here.
-
-For the papers you cite, give the authors, the title of the article, the journal name, journal volume number, date of publication and inclusive page numbers. Giving only the URL for the journal is not appropriate.
-
-For the websites, give the title, author (if applicable) and the website URL.
-
-----
-----
-# Appendix: Grading Rubric
-(Please remove this part in your final submission)
-
-These is the grading rubric that we will use to evaluate your document. 
-
-| Max Points  | **Content** |
-| ----------- | ------- |
-| 4          | Do the requirements clearly state the customers’ needs? |
-| 2          | Do the requirements avoid specifying a design (note: customer-specified design elements are allowed)? |
-| | |  
-|    | **Completeness** |
-| 14 | Are user stories complete? Are all major user stories included in the document?  |
-| 5 | Are user stories written in the correct form? | 
-| 14 |  Are all major use cases (except registration and login) included in the document? |
-| 15 | Are use cases written in sufficient detail to allow for design and planning? Are the "flow of events" in use case descriptions written in the form of "user actions and system responses to those"? Are alternate flows of events provided (when applicable)? | 
-| 6 |  Are the User Interface Requirements given with some detail? Are there some sketches, mockups?  |
-| | |  
-|   | **Clarity** |
-| 5 | Is the document carefully written, without typos and grammatical errors? <br> Is each part of the document in agreement with all other parts? <br> Are all items clear and not ambiguous? |
-| | |
-|**65**|**TOTAL**|
