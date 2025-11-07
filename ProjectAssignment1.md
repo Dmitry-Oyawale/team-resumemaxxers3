@@ -85,106 +85,58 @@ Customers/users include student and faculty that is part of the school organizat
 
 | Use case #1 |  |
 |--------------|--|
-| Name | View available positions |
+| Name | View and filter available and recommended positions |
 | Participating actor | Student |
-| Entry condition(s) | Student logs in to the system and enters the search page. |
-| Exit condition(s) | Student selects one of the positions or navigates to another page. |
-| Flow of events | 1. The student logs in to their account. 2. The student navigates to the search page. 3. The student views the available positions. 4. The student selects one position to view its details. |
-| Alternative flow of events | None |
+| Entry condition(s) | Student is logged in to the system and has entered the main page to view available or recommended research positions. |
+| Exit condition(s) | Student selects and views one of the position’s details, confirms or closes filters, or navigates away to another page. |
+| Flow of events | 1. The student navigates to the main page. 2. The system displays available research positions. 3. The student selects a position to view details. 4. The student reviews the research position information. 5. The student exits the detail view or returns to the search page.|
+| Alternative flow of events | 1. The student navigates to the main page. 2. The student navigates to the “Recommended Positions” page. 3. The system displays recommended positions based on the student profile. 4. The student selects a recommended position to view details. 5. The student reviews the information and exits the view.  AND/OR  1. The student clicks the filter button on the search page. 2. The student selects one or more filters. 3. The student confirms the filter selection. 4. The system updates and displays the filtered search results. Alternatively, the student closes the filter window or exits without confirming, or views profiles without clicking on any of them |
 | Iteration # | 1 |
 
 | Use case #2 |  |
-|--------------|--|
-| Name | View recommended positions |
-| Participating actor | Student |
-| Entry condition(s) | Student logs in to the system and enters the search page. |
-| Exit condition(s) | Student selects one of the recommended positions or navigates to another page. |
-| Flow of events | 1. The student logs in. 2. The student goes to the search page. 3. The student views the recommended positions. 4. The student selects one to view its details. |
-| Alternative flow of events | None |
-| Iteration # | 1 |
-
-| Use case #3 |  |
-|--------------|--|
-| Name | View research position details |
-| Participating actor | Student |
-| Entry condition(s) | Student is logged in and viewing available or recommended positions. |
-| Exit condition(s) | Student closes the position detail view. |
-| Flow of events | 1. The student opens the position details page. 2. The student reviews the research position information. 3. The student exits the view. |
-| Alternative flow of events | None |
-| Iteration # | 1 |
-
-| Use case #4 |  |
 |--------------|--|
 | Name | Apply for research position |
 | Participating actor | Student |
 | Entry condition(s) | Student is logged in and viewing position details. |
 | Exit condition(s) | Student completes or cancels the application. |
-| Flow of events | 1. The student opens the application form. 2. The student writes a short statement. 3. The student provides a faculty reference. 4. The system sends a notification to the referenced professor. 5. The student submits the application. |
-| Alternative flow of events | 1. The student opens the application form. 2. The student closes the form without submitting. |
+| Flow of events | 1. The student opens the application form. 2. The student writes a short statement. 3. The student provides a faculty reference (optional). 4. The system sends a notification to the referenced professor if a reference is provided. 5. The student submits the application.  |
+| Alternative flow of events | 1. The student opens the application form. 2. The student closes the form without submitting. Alternatively, the student sends an application without a reference. |
 | Iteration # | 2 |
 
-| Use case #5 |  |
+| Use case #3 |  |
 |--------------|--|
-| Name | View application status and reference update |
+| Name | View/modify application status and reference update |
 | Participating actor | Student |
-| Entry condition(s) | Student is logged in and has entered the dashboard. |
-| Exit condition(s) | Student leaves the dashboard or views specific application details. |
-| Flow of events | 1. The student opens the dashboard. 2. The student views the current application status. 3. The student views the recommendation status after updates. |
-| Alternative flow of events | None |
+| Entry condition(s) | Student is logged in, has entered the dashboard and has at least one active or pending application. |
+| Exit condition(s) | Student leaves the dashboard, views specific application details, and/or withdraws an application or cancels the withdrawal action. |
+| Flow of events | 1. The student opens the dashboard. 2. The student views the current application status. 3. The student views the recommendation or reference status after updates. |
+| Alternative flow of events | 1. The student checks the current state of their application. 2. The system verifies that the application is in a pending state. 3. The student confirms withdrawal. 4. The system updates the application status to “withdrawn” and displays a confirmation message. Alternatively, the student closes the page without taking any actions.|
 | Iteration # | 2 |
 
-| Use case #6 |  |
-|--------------|--|
-| Name | Withdraw pending applications |
-| Participating actor | Student |
-| Entry condition(s) | Student is logged in, has applied to a position currently marked as pending, and is viewing the dashboard. |
-| Exit condition(s) | Student withdraws the application or cancels the action. |
-| Flow of events | 1. The student checks the current state of their application. 2. The student verifies that the application is in a pending state. 3. The student withdraws the application. |
-| Alternative flow of events | 1. The student opens the application status page. 2. The student closes the page without taking action. |
-| Iteration # | 2 |
 
-| Use case #7 |  |
-|--------------|--|
-| Name | Filter research opportunities |
-| Participating actor | Student |
-| Entry condition(s) | Student is logged in and viewing research positions on the search page. |
-| Exit condition(s) | Student closes or confirms the filters. |
-| Flow of events | 1. The student clicks the filter button. 2. The student selects one or more filters. 3. The student confirms the filter selection. 4. The system updates the search results accordingly. |
-| Alternative flow of events | 1. The student clicks the filter button. 2. The student selects filters. 3. The student closes the search page without confirming. |
-| Iteration # | 1 |
-
-| Use case #8 |                                                                                                                                      |
+| Use case #4 |                                                                                                                                      |
 |--------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | Name | Reference a professor                                                                                                                |
 | Participating actor | Student                                                                                                                              |
 | Entry condition(s) | Student is logged in and is in the application page.                                                                        |
-| Exit condition(s) | Reference request is sent.                                                                                                           |
+| Exit condition(s) | Reference request is sent and shows up in the notification/profile page                                                                                                          |
 | Flow of events | 1. The student enters the professor’s information in the references section. 2. The system sends the reference request.                                        |
-| Alternative flow of events | 1. The student enters a non-existing professor's information. 2. The system notifies the student that such professor does not exist. |
+| Alternative flow of events | 1. The student enters a non-existing professor's information. 2. The system notifies the student that such a professor does not exist. |
 | Iteration # | 2                                                                                                                                    |
 
 
-| Use case #9 |  |
+| Use case #5 |  |
 |--------------|--|
-| Name | View and edit student profile |
-| Participating actor | Student |
-| Entry condition(s) | Student is logged in. |
-| Exit condition(s) | Student exits the profile and returns to the main page. |
-| Flow of events | 1. The student clicks on the profile. 2. The student clicks the edit profile button. 3. The student edits profile information. 4. The student clicks the save button. 5. The system updates the profile. |
-| Alternative flow of events | 1. The student clicks the edit profile button. 2. The student makes no changes. 3. The student clicks save. 4. The system displays a warning message. |
+| Name | View and edit own profile |
+| Participating actor | Student, faculty |
+| Entry condition(s) | Student/Faculty is logged in. |
+| Exit condition(s) | User edits the profile and saves, or makes no changes and returns to the main page. |
+| Flow of events | 1. The user clicks on the profile. 2. The user edits profile information. 3. The user clicks the save button. 4. The system updates the profile. |
+| Alternative flow of events | The user clicks on the profile, then immediately exits |
 | Iteration # | 1 |
 
-| Use case #10 |  |
-|--------------|--|
-| Name | View and edit faculty profile |
-| Participating actor | Faculty |
-| Entry condition(s) | Faculty is logged in. |
-| Exit condition(s) | Faculty exits the profile and returns to the main page. |
-| Flow of events | 1. The faculty clicks on the profile. 2. The faculty clicks the edit profile button. 3. The faculty edits profile details. 4. The faculty clicks save. 5. The system updates the profile. |
-| Alternative flow of events | 1. The faculty clicks edit. 2. The faculty makes no changes. 3. The faculty clicks save. 4. The system displays a warning message. |
-| Iteration # | 1 |
 
-| Use case #11 |  |
+| Use case #6 |  |
 |--------------|--|
 | Name | Create undergraduate research position |
 | Participating actor | Faculty |
@@ -194,67 +146,38 @@ Customers/users include student and faculty that is part of the school organizat
 | Alternative flow of events | 1. The faculty submits incomplete details. 2. The system displays a reminder about missing fields. |
 | Iteration # | 1 |
 
-| Use case #12 |  |
+| Use case #7 |  |
 |--------------|--|
-| Name | Edit undergraduate research position |
+| Name | Edit and delete undergraduate research position |
 | Participating actor | Faculty |
 | Entry condition(s) | Faculty is logged in. |
-| Exit condition(s) | Research position edited. |
-| Flow of events | 1. The faculty selects a research position to edit. 2. The faculty modifies details. 3. The system saves changes. |
-| Alternative flow of events | 1. The faculty selects a research position. 2. The faculty makes no modifications. |
-| Iteration # | 2 |
+| Exit condition(s) | Research position edited or deleted. |
+| Flow of events | 1. The faculty selects a research position to edit. 2. The faculty modifies details. 3. The system validates the input and saves changes. 4. A confirmation message is displayed to faculty that the research position has been successfully updated. |
+| Alternative flow of events | 1. The faculty selects a research position to delete. 2. The system prompts for confirmation. 3. The faculty confirms deletion. 4. The system removes the research position and displays a confirmation message. |
+| Iteration # | 1 |
 
-| Use case #13 |  |
-|--------------|--|
-| Name | Delete undergraduate research position |
-| Participating actor | Faculty |
-| Entry condition(s) | Faculty is logged in and has created research positions. |
-| Exit condition(s) | Research position deleted. |
-| Flow of events | 1. The faculty selects a research position. 2. The faculty opens details. 3. The faculty clicks delete. 4. The faculty confirms deletion. 5. The system removes the position. |
-| Alternative flow of events | 1. The faculty does not confirm deletion. 2. The system keeps the position. |
-| Iteration # | 2 |
-
-| Use case #14 |  |
+| Use case #8 |  |
 |--------------|--|
 | Name | View student application profiles |
 | Participating actor | Faculty |
-| Entry condition(s) | Faculty is logged in and viewing student applications. |
-| Exit condition(s) | Faculty exits the student application profile page. |
-| Flow of events | 1. The faculty navigates to the student application page. 2. The faculty views a student application profile. 3. The faculty exits the profile page. |
-| Alternative flow of events | None |
+| Entry condition(s) | Faculty is logged in. |
+| Exit condition(s) | Faculty exits the student applications list page. |
+| Flow of events | 1. The faculty navigates to the student application page and sees the list. 2. The faculty views a student application profile. 3. The faculty exits the profile page. 4. The faculty exits the list of student applications. |
+| Alternative flow of events | 1. The faculty navigates to the student application page and sees the list. 2. The faculty exits the list of student applications. |
 | Iteration # | 2 |
 
-| Use case #15 |  |
-|--------------|--|
-| Name | View student profile for faculty |
-| Participating actor | Faculty |
-| Entry condition(s) | Faculty is viewing student applications. |
-| Exit condition(s) | Faculty exits the profile and returns to the applications list. |
-| Flow of events | 1. The faculty clicks on a student profile. 2. The faculty views profile details. 3. The faculty exits the profile. |
-| Alternative flow of events | None |
-| Iteration # | 3 |
 
-| Use case #16 |  |
+| Use case #9 |  |
 |--------------|--|
-| Name | Approve student application |
+| Name | Approve/Reject student application |
 | Participating actor | Faculty |
 | Entry condition(s) | Faculty is logged in and viewing student applications. |
-| Exit condition(s) | Application status updated to Approved. |
+| Exit condition(s) | Application status updated to approved, rejected, user makes no modifications and exits. |
 | Flow of events | 1. The faculty logs in. 2. The faculty reviews a student application. 3. The faculty approves the application. 4. The system updates status to Approved. |
-| Alternative flow of events | 1. The faculty reviews the application. 2. The faculty closes the page without approving. |
+| Alternative flow of events | 1. The faculty logs in. 2. The faculty reviews a student application. 3. The faculty rejects the application. 4. The system updates status to Rejected OR 1. The faculty reviews the application. 2. The faculty closes the page without approving or rejecting. |
 | Iteration # | 3 |
 
-| Use case #17 |  |
-|--------------|--|
-| Name | Reject student application |
-| Participating actor | Faculty |
-| Entry condition(s) | Faculty is logged in and viewing student applications. |
-| Exit condition(s) | Application status updated to Rejected. |
-| Flow of events | 1. The faculty logs in. 2. The faculty reviews a student application. 3. The faculty rejects the application. 4. The system updates status to Rejected. |
-| Alternative flow of events | 1. The faculty reviews a student application. 2. The faculty closes the page without rejecting. |
-| Iteration # | 3 |
-
-| Use case #18 |  |
+| Use case #10 |  |
 |--------------|--|
 | Name | Edit the predefined list of values |
 | Participating actor | Faculty |
@@ -264,35 +187,17 @@ Customers/users include student and faculty that is part of the school organizat
 | Alternative flow of events | 1. The faculty enters edit mode. 2. The faculty exits edit mode without saving. 3. No changes are made. |
 | Iteration # | 3 |
 
-| Use case #19 |  |
-|--------------|--|
-| Name | Edit or delete undergraduate research positions |
-| Participating actor | Faculty |
-| Entry condition(s) | Faculty is logged in and viewing existing research positions. |
-| Exit condition(s) | Position edited, deleted, or unchanged. |
-| Flow of events | 1. The faculty views research positions. 2. The faculty chooses to edit or delete a position. 3. The faculty saves or confirms changes. 4. The system updates records. |
-| Alternative flow of events | 1. The faculty makes no changes. 2. The faculty exits without saving. |
-| Iteration # | 3 |
 
-| Use case #20 |  |
+| Use case #11 |  |
 |--------------|--|
 | Name | Approve or decline student reference request |
 | Participating actor | Faculty |
-| Entry condition(s) | Faculty is logged in and viewing notifications. |
+| Entry condition(s) | Faculty is logged in and viewing profile. |
 | Exit condition(s) | Reference status updated. |
-| Flow of events | 1. The faculty opens notifications. 2. The faculty reviews a reference request. 3. The faculty approves or declines. 4. The system updates the reference status. |
-| Alternative flow of events | 1. The faculty opens notifications. 2. The faculty closes the page without responding. |
+| Flow of events | 1. The faculty opens their profile page and sees reference requests. 2. The faculty reviews a reference request. 3. The faculty approves or declines. 4. The system updates the reference status. |
+| Alternative flow of events | 1. The faculty reviews reference requests in the profile page. 2. The faculty closes the page without responding. |
 | Iteration # | 3 |
-
-| Use case #21 |                                                                                                 |
-|--------------|-------------------------------------------------------------------------------------------------|
-| Name | Receive student reference notification                                                          |
-| Participating actor | Faculty                                                                                         |
-| Entry condition(s) | Faculty is logged in.                                                                           |
-| Exit condition(s) | Notification received.                                                                          |
-| Flow of events | 1. The student confirms a reference request. 2. The system sends a notification to the faculty. |
-| Alternative flow of events | 1. The student provides a non-existing professor's email/name. 2. A warning is displayed.       |
-| Iteration # | 3                                                                                               |
+                                                                                            |
 
 
 ----
