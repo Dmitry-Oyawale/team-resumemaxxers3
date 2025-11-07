@@ -35,7 +35,7 @@ Prepared by:
 | Name | Date       | Changes | Version |
 | ------ |------------| --------- | --------- |
 |Revision 1 | 2025-11-05 |Initial draft | 1.0        |
-|      |            |         |         |
+|Final revisions | 2025-11-06 | Final | 2.0         |
 |      |            |         |         |
 
 ----
