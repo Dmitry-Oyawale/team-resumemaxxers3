@@ -324,6 +324,3 @@ Customers/users include student and faculty that is part of the school organizat
 # 4. Product Backlog
 
 https://github.com/WPI-CS3733-2025B/team-resumemaxxers/issues
-
-----
-# 5. References
