@@ -4,10 +4,10 @@
 --------
 Prepared by:
 
-* `<Kevin Lai>`,`<resumemaxxers>`
-* `<Ziyue Chen>`,`<resumemaxxers>`
-* `<JimXiang>`,`<resumemaxxers>`
-* `<Matvey Shestopalov>`,`<resumemaxxers>`
+* `Kevin Lai`,`resumemaxxers`
+* `Ziyue Chen`,`resumemaxxers`
+* `JimXiang`,`resumemaxxers`
+* `Matvey Shestopalov`,`resumemaxxers`
 
 ---
 
@@ -41,7 +41,7 @@ Prepared by:
 ----
 # 1. Introduction
 
-Our software facilitates an easier connection between faculty and students about research opportunities and positions, particularly those not teaching undergraduate classes.  Faculty can easily reach out to students interested in their respected major. This application dissolves the barrier between students and faculty in different degree levels, and ensures qualified sophomores and juniors the opportunity to utilize their talents fully and further their academic/professional career. Students also have the opportunity to explore various research topics aligned with their interests.
+Our software aims to facilitate easier communication between faculty and students regarding research positions and opportunities, particularly for faculty not teaching undergraduate classes. Faculty members can create research positions and easily reach out to undergraduate students interested in their respected major. This application dissolves the barrier between students and faculty in different degree levels, and ensures qualified sophomores and juniors the opportunity to utilize their talents fully and further their academic/professional career. Students also have the opportunity to explore various research topics aligned with their interests, filtering for recommended and available research positions to apply for. Faculty can access and mull over student profile details to discern talent and potential, in both student applications and references, for interviewing purposes. 
 
 
 
@@ -50,7 +50,7 @@ Our software facilitates an easier connection between faculty and students about
 
 ## 2.1 Customer, Users, and Stakeholders
 
-Customers/users include student and faculty that is part of the school organization who benefits from our software.
+Customers/users include student and faculty that is part of the school organization who create and access the application forms. Stakeholders include students who benefit from the experienced provided by various research opportunities, and faculty who benefit from additional assistance from the students. The university administration is also interested in a streamlined research culture as an avenue towards enhancing their institutional reputation, as well as the project development team responsible the product's creation.
 
 ----
 ## 2.2 User Stories
@@ -59,7 +59,7 @@ Customers/users include student and faculty that is part of the school organizat
 2. As a student, I want to login to the system by using my email and password or the SSO, so that I can securely access my account and manage my applications.
 3. As a student, I want to view all the available research positions for me, and also see the details of the position when I click on it, so that I can explore different positions that match my interests.
 4. As a student, I want to view all the recommended positions that best fit my major and interests presented in the profile, so that I can easily find research positions that best fit my profile and skills.
-5. As a student, I would like to apply for a research position, so that I can submit my application and be reviewed by the faculties.
+5. As a student, I would like to apply for a research position, so that I can submit my application and be reviewed by faculty.
 6. As a student, I want to view application status and reference updates, so that I can track the progress of my applications and stay informed about any changes or feedback made by the supervisor.
 7. As a student, I want to withdraw my “pending” applications, so that I can manage my application list and avoid confusion with positions I no longer want to pursue.
 8. As a student, I want to select from a predefined list of values (including date, time, etc.) so I can filter the available research opportunities and choose the most suitable one.
@@ -78,7 +78,6 @@ Customers/users include student and faculty that is part of the school organizat
 8. As a faculty, I want to reject student applications so better people can be accepted
 9. As a faculty, I want to edit the predefined list of values from which user can select so they have more diversity of choice
 10. As a faculty, I want to edit or delete undergraduate research positions, in case I made a mistake.
-11. As a faculty, I want to be notified when a student references me in their application so I can approve or decline the reference
 
 ----
 ## 2.3 Use Cases
