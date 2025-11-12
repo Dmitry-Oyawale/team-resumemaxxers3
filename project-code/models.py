@@ -10,7 +10,10 @@ from app import login
 
 @login.user_loader
 def load_user(id):
-    return db.session.get(User, int(id))
+    user = db.session.get(Student, int(id))
+    if user:
+        return user
+    return db.session.get(Faculty, int(id))
 
 students_majors = sqla.Table(
     'students_majors',
@@ -118,6 +121,7 @@ class Application(db.Model):
 
     student: sqlo.Mapped['Student'] = sqlo.relationship(back_populates='applications')
     position: sqlo.Mapped['Position'] = sqlo.relationship(back_populates='applications')
+    recommendations: sqlo.Mapped[list['Recommendation']] = sqlo.relationship(back_populates='application')
 
     def __repr__(self):
         return f'<Application {self.id}>'
@@ -165,7 +169,6 @@ class Course(db.Model):
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
     name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
     coursenum: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(10), index=True)
-    major_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('major.id'))
 
     major: sqlo.Mapped['Major'] = sqlo.relationship(back_populates='courses')
     students: sqlo.Mapped[List['CourseEnrollment']] = sqlo.relationship(back_populates='course')
@@ -180,10 +183,12 @@ class Recommendation(db.Model):
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
     student_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('student.id'))
     faculty_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('faculty.id'))
+    application_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('application.id'))
     status: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64), default="pending")
 
     student: sqlo.Mapped['Student'] = sqlo.relationship(back_populates='recommendations')
     faculty: sqlo.Mapped['Faculty'] = sqlo.relationship(back_populates='recommendations')
+    application: sqlo.Mapped['Application'] = sqlo.relationship(back_populates='recommendations')
 
     def __repr__(self):
         return f'<Recommendation {self.id}>'
@@ -195,9 +200,12 @@ class CourseEnrollment(db.Model):
     student_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('student.id'))
     course_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('course.id'))
     grade: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(2))
+    instructor_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('faculty.id'))
 
     student: sqlo.Mapped['Student'] = sqlo.relationship(back_populates='courses')
     course: sqlo.Mapped['Course'] = sqlo.relationship(back_populates='students')
+    instructor: sqlo.Mapped['Faculty'] = sqlo.relationship()
+
 
     def __repr__(self):
         return f'<CourseEnrollment {self.id}>'
@@ -223,3 +231,4 @@ class Language(db.Model):
 
     def __repr__(self):
         return f'<Language {self.name}>'
+
