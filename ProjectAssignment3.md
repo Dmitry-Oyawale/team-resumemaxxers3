@@ -270,7 +270,51 @@ Include a detailed description of the routes your application will implement.
 * You can use the following table template to list your route specifications. 
 * Organize this section according to your module decomposition, i.e., include a sub-section for each module/blueprint and list all routes for that sub-section in a table.  
 
-#### 2.2.2.1 \<Blueprint1> Routes
+#### 2.2.2.1 \<Blueprint1> Routes auth.routes
+
+|   | Methods           | URL Path   | Description  |
+|:--|:------------------|:-----------|:-------------|
+|1. |  'GET', 'POST'  | student/login |   student login page  |
+|2. |   'GET', 'POST'  | student/register |  student register account |
+|3. |   'GET'  | student/logout |  student logout |
+|4. |  'GET', 'POST'  | faculty/login   | faculty login page |
+|5. | 'GET', 'POST'  |  faculty/register |  faculty register account  |
+|6. | 'GET'  | faculty/logout | faculty logout |
+
+#### 2.2.2.2 \<Blueprint2> Routes  main.routes -- student
+
+|   | Methods           | URL Path   | Description  |
+|:--|:------------------|:-----------|:-------------|
+|1. | 'GET' | student/profile/view | student view their profile |
+|2. | 'GET', 'POST' | student/profile/edit | student edit their profile |
+|3. |                   |            |              |
+|4. |                   |            |              |
+|5. |                   |            |              |
+|6. |                   |            |              |
+
+#### 2.2.2.3 \<Blueprint3> Routes main.routes -- faculty
+
+|   | Methods           | URL Path   | Description  |
+|:--|:------------------|:-----------|:-------------|
+|1. | 'GET' | faculty/profile/view | faculty view their profile |
+|2. | 'GET', 'POST' | faculty/editlists | faculty edit the predefined lists |
+|3. |                   |            |              |
+|4. |                   |            |              |
+|5. |                   |            |              |
+|6. |                   |            |              |
+
+#### 2.2.2.4 \<Blueprint4> Routes main.routes -- application
+
+|   | Methods           | URL Path   | Description  |
+|:--|:------------------|:-----------|:-------------|
+|1. |                   | faculty/application/reject | faculty reject students' application |
+|2. |                   | faculty/application/approve | faculty approve students' application |
+|3. |                   | student/application/withdraw | student withdraw their 'pending' applications |
+|4. |                   | faculty/application | faculty view all the applications |
+|5. |                   | student/application | student view all the applications |
+|6. |                   |            |              |
+
+#### 2.2.2.5 \<Blueprint5> Routes
 
 |   | Methods           | URL Path   | Description  |
 |:--|:------------------|:-----------|:-------------|
@@ -313,3 +357,4 @@ Provide UI sketches or screenshots for the following pages:
 <img src ="md-images/application_page.png"></img>
 
 # 3. References
+
