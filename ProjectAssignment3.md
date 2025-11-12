@@ -286,10 +286,6 @@ Include a detailed description of the routes your application will implement.
 |:--|:-------------|:-----------|:-----------------------------------------|
 |1. | 'GET'        | student/profile/view | students or faculty view student profile |
 |2. | 'GET', 'POST' | student/profile/edit | student edits their profile              |
-|3. |              |            |                                          |
-|4. |              |            |                                          |
-|5. |              |            |                                          |
-|6. |              |            |                                          |
 
 #### 2.2.2.3 \<Blueprint3> Routes main.faculty.routes -- faculty
 
@@ -297,10 +293,6 @@ Include a detailed description of the routes your application will implement.
 |:--|:------------------|:-----------|:-------------|
 |1. | 'GET' | faculty/profile/view | faculty view their profile |
 |2. | 'GET', 'POST' | faculty/editlists | faculty edit the predefined lists |
-|3. |                   |            |              |
-|4. |                   |            |              |
-|5. |                   |            |              |
-|6. |                   |            |              |
 
 #### 2.2.2.4 \<Blueprint4> Routes main.application.routes -- application
 
@@ -320,7 +312,6 @@ Include a detailed description of the routes your application will implement.
 |3. | 'GET', 'POST' | position/delete | faculty-only method for deleting a position    |
 |4. | 'GET'       | position/view   | page for viewing position info                 |
 |5. | 'GET', 'POST' | position/apply  | student-only method for applying to a position |
-|6. |             |                 |                                                |
 
 #### 2.2.2.6 \<Blueprint6> Routes main.recommendation.routes -- recommendation
 
@@ -330,8 +321,6 @@ Include a detailed description of the routes your application will implement.
 |2. | 'POST'  | recommendation/reject  | faculty-only method for rejecting a student rec. request       |
 |3. | 'POST'  | recommendation/accept  | faculty-only method for accepting a student rec. request       |
 |4. | 'GET'   | recommendation         | view incoming (faculty) or sent (student) rec. requests (page) |
-|5. |         |                        |                                                                |
-|6. |         |                        |                                                                |
 
 Repeat the above for other modules you included in your application. 
 
