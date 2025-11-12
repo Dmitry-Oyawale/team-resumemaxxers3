@@ -322,7 +322,7 @@ Include a detailed description of the routes your application will implement.
 |5. | 'GET, POST' | position/apply  | student-only method for applying to a position |
 |6. |             |                 |                                                |
 
-#### 2.2.2.2 \<Blueprint6> Routes main.recommendation.routes -- recommendation
+#### 2.2.2.6 \<Blueprint6> Routes main.recommendation.routes -- recommendation
 
 |   | Methods | URL Path               | Description                                                    |
 |:--|:--------|:-----------------------|:---------------------------------------------------------------|
