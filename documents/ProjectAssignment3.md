@@ -345,18 +345,23 @@ Repeat the above for other modules you included in your application.
 
 Provide UI sketches or screenshots for the following pages:
  * Faculty main page
+
 <img src ="../md-images/faculty_main.png"></img>
 
  * Student main page
+
 <img src ="../md-images/student_main.png"></img>
 
  * Faculty creating a position 
+
 <img src ="../md-images/edit_or_create.png"></img>
 
  * Faculty accepting/rejecting an application
+
 <img src ="../md-images/inbox.png"></img>
 
  * Student applying for a position
+
 <img src ="../md-images/application_page.png"></img>
 
 # 3. References
