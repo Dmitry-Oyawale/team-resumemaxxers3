@@ -14,7 +14,6 @@ class RegistrationForm(FlaskForm):
     firstname = StringField('First Name', validators = [DataRequired()])
     lastname = StringField('Last Name', validators = [DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    id = StringField('Address', validators = [DataRequired()])
 
     majors = QuerySelectMultipleField('Majors',
                                       query_factory=lambda: db.session.scalars(sqla.select(Major).order_by(Major.name)),
@@ -34,13 +33,6 @@ class RegistrationForm(FlaskForm):
                                                query_factory=lambda: db.session.scalars(
                                                    sqla.select(Language).order_by(Language.name)),
                                                get_label=lambda theLanguage: theLanguage.name,
-                                               widget=ListWidget(prefix_label=False),
-                                               option_widget=CheckboxInput())
-
-    courses = QuerySelectMultipleField('Courses Taken',
-                                               query_factory=lambda: db.session.scalars(
-                                                   sqla.select(Course).order_by(Course.name)),
-                                               get_label=lambda theCourse: theCourse.name,
                                                widget=ListWidget(prefix_label=False),
                                                option_widget=CheckboxInput())
 

@@ -2,7 +2,7 @@ from app import db
 from flask import render_template, flash, redirect, url_for
 import sqlalchemy as sqla
 
-from app.main.models import Student
+from app.main.models import Student, CourseEnrollment
 from app.auth.auth_forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from app.auth import auth_blueprint as auth
@@ -15,16 +15,17 @@ def register():
                            firstname = rform.firstname.data,
                            lastname = rform.lastname.data,
                            email = rform.email.data,
-                           id = rform.id.data,
-                           #major = ,
+                           majors = rform.majors.data,
                            gpa = rform.gpa.data,
-                           #research_topics = ,
-                           #languages = ,
-                           #courses = 
-                           )
+                           research_topics = rform.research_topics.data,
+                           languages = rform.languages.data
+                         )
+        print(student)
+
         student.set_password(rform.password.data)
         db.session.add(student)
         db.session.commit()
+
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('main.index'))
     return render_template('register.html', form = rform)
