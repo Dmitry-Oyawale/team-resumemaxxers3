@@ -337,10 +337,8 @@ Include a detailed description of the routes your application will implement.
 
 |   | Methods           | URL Path                          | Description  |
 |:--|:------------------|:----------------------------------|:-------------|
-|1. | 'GET', 'POST' | main/index | student index home page |
-|2. | 'GET', 'POST' | main/faculty_index | faculty home page |
-|3. | 'GET',  | main/position<position_id>/view                | view position        |
-|4. | 'GET',  | main/studentlist<position_id>/view                | faculty view student application list        |
+|1. | 'GET',  | main/position/<position_id>/view                | view position        |
+|2. | 'GET',  | main/student_list/<position_id>/view                | faculty view student application list for a position       |
 
 
 Repeat the above for other modules you included in your application. 
