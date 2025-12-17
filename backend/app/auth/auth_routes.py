@@ -76,3 +76,50 @@ def logout():
 
 #@auth.route('/faculty/verify/<token>', methods = ['GET'])
 #@auth.route('/faculty/login/sso', methods = ['GET'])
+
+from flask import request, jsonify
+from flask_login import login_user
+from werkzeug.security import check_password_hash
+import sqlalchemy as sqla
+from app import db
+from app.main.models import Student
+from app.main.models import Faculty
+
+
+@auth.route("/api/auth/login", methods=["POST"])
+def api_login():
+    data = request.get_json() or {}
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    if not email or not password:
+        return jsonify({"ok": False, "error": "Email and password required"}), 400
+
+    student = db.session.scalar(
+        sqla.select(Student).where(Student.email == email)
+    )
+    faculty = db.session.scalar(
+        sqla.select(Faculty).where(Faculty.email == email)
+    )
+
+    user = student or faculty
+
+    if user is None or not check_password_hash(user.password_hash, password):
+        return jsonify({"ok": False, "error": "Invalid credentials"}), 401
+
+    login_user(user)
+    return jsonify({"ok": True})
+
+
+@auth.route("/api/auth/me", methods=["GET"])
+def api_me():
+    if not current_user.is_authenticated:
+        return jsonify({"authenticated": False}), 200
+
+    return jsonify({
+        "authenticated": True,
+        "id": current_user.id,
+        "role": getattr(current_user, "role", None),
+        "email": getattr(current_user, "email", None),
+        "name": getattr(current_user, "name", None),
+    })

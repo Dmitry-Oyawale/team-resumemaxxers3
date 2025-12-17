@@ -9,6 +9,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import text
 
 from app.main import main_blueprint as main
+from flask import jsonify
 
 @main.route('/', methods=['GET'])
 @main.route('/index', methods=['GET'])
@@ -18,3 +19,7 @@ def index():
     #courses = db.session.scalars(sqla.select(Course))
     Students = db.session.scalars(sqla.select(Student))
     return render_template('student.index.html', title="Course List", students = Students, form = empty_form)
+
+@main.route("/api/health")
+def api_health():
+    return jsonify({"ok": True})
