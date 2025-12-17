@@ -15,10 +15,9 @@ from flask import jsonify
 @main.route('/index', methods=['GET'])
 @login_required
 def index():
-    empty_form = EmptyForm()
     #courses = db.session.scalars(sqla.select(Course))
     Students = db.session.scalars(sqla.select(Student))
-    return render_template('student.index.html', title="Course List", students = Students, form = empty_form)
+    return render_template('student.index.html', title="Course List", students = Students)
 
 @main.route("/api/health")
 def api_health():
