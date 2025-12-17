@@ -19,6 +19,3 @@ def index():
     Students = db.session.scalars(sqla.select(Student))
     return render_template('student.index.html', title="Course List", students = Students)
 
-@main.route("/api/health")
-def api_health():
-    return jsonify({"ok": True})
