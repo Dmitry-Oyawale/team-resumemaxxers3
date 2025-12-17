@@ -4,8 +4,11 @@ from app import create_app, db
 from app.main.models import Major, ResearchTopic, Language, Course
 import sqlalchemy as sqla
 import sqlalchemy.orm as sqlo
+from flask_cors import CORS
 
 app = create_app(Config)
+CORS(app, supports_credentials=True)
+
 app.config['SECRET_KEY'] = 'REPLACE_LATER'
 
 @app.shell_context_processor
