@@ -2,7 +2,7 @@ from app import db
 from flask import render_template, flash, redirect, url_for
 import sqlalchemy as sqla
 
-from app.main.models import Viewer
+from app.main.models import Viewer, Author
 from app.auth.auth_forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from app.auth import auth_blueprint as auth
@@ -12,8 +12,6 @@ def register():
     rform = RegistrationForm()
     if rform.validate_on_submit():
         viewer = Viewer( username = rform.username.data,
-                           firstname = rform.firstname.data,
-                           lastname = rform.lastname.data,
                            email = rform.email.data)
         print(viewer)
 
@@ -36,14 +34,19 @@ def login():
     if lform.validate_on_submit():
 
         query = sqla.select(Viewer).where(Viewer.username == lform.username.data)
-        viewer = db.session.scalars(query).first()
+        user = db.session.scalars(query).first()
 
-        if (viewer is None) or (viewer.check_password(lform.password.data) == False):
+        if (user is None):
+            query = sqla.select(Author).where(Author.username == lform.username.data)
+            user = db.session.scalars(query).first()
+
+        if (user is None) or (user.check_password(lform.password.data) == False):
             return redirect(url_for('auth.login'))
         
-        login_user(viewer, remember = lform.remember_me.data)
+        login_user(user, remember = lform.remember_me.data)
         flash('The user {} has successfully logged in!'.format(current_user.username))
         return redirect(url_for('main.index'))
+    
     return render_template('login.html', form = lform)
 
 @auth.route('/logout', methods = ['GET'])

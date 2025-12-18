@@ -10,10 +10,20 @@ from app import login
 
 @login.user_loader
 def load_user(id):
-    user = db.session.get(Author, int(id))
+    if ":" in id:
+        role, raw_id = id.split(":", 1)
+        pk = int(raw_id)
+        if role == "author":
+            return db.session.get(Author, pk)
+        if role == "viewer":
+            return db.session.get(Viewer, pk)
+        return None
+    
+    pk = int(id)
+    user = db.session.get(Author, pk)
     if user:
         return user
-    return db.session.get(Viewer, int(id))
+    return db.session.get(Viewer, pk)
 
 posts_tags = sqla.Table(
     'posts_tags',
@@ -43,8 +53,15 @@ class Viewer(User):
     __tablename__ = 'viewer'    
     comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='viewer')
 
+    @property
+    def role(self):
+        return "viewer"
+    
     def __repr__(self):
         return f'<Viewer {self.username}>'
+    
+    def get_id(self):
+        return f"viewer:{self.id}"
 
 
 class Author(User):
@@ -52,8 +69,15 @@ class Author(User):
     posts: sqlo.Mapped[List['Post']] = sqlo.relationship(back_populates='author')
     comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='author')
 
+    @property
+    def role(self):
+        return "author"
+    
     def __repr__(self):
         return f'<Author {self.username}>'
+    
+    def get_id(self):
+        return f"author:{self.id}"
 
 
 class Post(db.Model):
@@ -62,6 +86,7 @@ class Post(db.Model):
     name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
     description: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
     date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
+    likes: sqlo.Mapped[int] = sqlo.mapped_column(sqla.Integer, default=0)
     author_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('author.id'))
     
     author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='posts')

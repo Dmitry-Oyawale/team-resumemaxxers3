@@ -11,30 +11,7 @@ import sqlalchemy as sqla
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators = [DataRequired()])
-    firstname = StringField('First Name', validators = [DataRequired()])
-    lastname = StringField('Last Name', validators = [DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-
-    majors = QuerySelectMultipleField('Majors',
-                                      query_factory=lambda: db.session.scalars(sqla.select(Major).order_by(Major.name)),
-                                      get_label=lambda theMajor: theMajor.name,
-                                      widget=ListWidget(prefix_label=False),
-                                      option_widget=CheckboxInput())
-
-    gpa = StringField('GPA', validators = [DataRequired()])
-
-    research_topics = QuerySelectMultipleField('Interests',
-                                      query_factory=lambda: db.session.scalars(sqla.select(ResearchTopic).order_by(ResearchTopic.name)),
-                                      get_label=lambda theResearchTopic: theResearchTopic.name,
-                                      widget=ListWidget(prefix_label=False),
-                                      option_widget=CheckboxInput())
-
-    languages = QuerySelectMultipleField('Languages',
-                                               query_factory=lambda: db.session.scalars(
-                                                   sqla.select(Language).order_by(Language.name)),
-                                               get_label=lambda theLanguage: theLanguage.name,
-                                               widget=ListWidget(prefix_label=False),
-                                               option_widget=CheckboxInput())
 
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField('Password', validators=[DataRequired(), EqualTo('password')])
@@ -44,14 +21,22 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, username):
         query = sqla.select(Viewer).where(Viewer.username == username.data)
         viewer = db.session.scalars(query).first()
+        query1 = sqla.select(Author).where(Author.username == username.data)
+        author = db.session.scalars(query1).first()
         if viewer is not None: 
+            raise ValidationError('The username already exists! Please use a different username.')
+        if author is not None:
             raise ValidationError('The username already exists! Please use a different username.')
      
     def validate_email(self, email):
         query = sqla.select(Viewer).where(Viewer.email == email.data)
         viewer = db.session.scalars(query).first()
+        query1 = sqla.select(Author).where(Author.email == email.data)
+        author = db.session.scalars(query1).first()
         if viewer is not None: 
             raise ValidationError('The username already exists! Please use a different email.')
+        if author is not None:
+            raise ValidationError('The username already exists! Please use a different username.')
                                   
 class LoginForm(FlaskForm):
     username = StringField('Username', validators = [DataRequired()])
