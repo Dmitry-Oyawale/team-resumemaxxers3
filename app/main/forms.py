@@ -1,0 +1,26 @@
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, SelectField, BooleanField, PasswordField, DateField
+from wtforms.validators import ValidationError, DataRequired, EqualTo, Email
+from wtforms import TextAreaField
+from wtforms.validators import Length
+
+from app import db
+import sqlalchemy as sqla
+from wtforms_sqlalchemy.fields import QuerySelectMultipleField, QuerySelectField
+from wtforms.widgets import ListWidget, CheckboxInput
+from app.main.models import Tag
+
+
+class CreatePost(FlaskForm):
+    name = StringField('Title', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    date = DateField('Date', validators=[DataRequired()], render_kw={"class": "datepicker-input"})
+    tags = QuerySelectMultipleField('Tags',
+                                      query_factory=lambda: db.session.scalars(sqla.select(Tag).order_by(Tag.name)),
+                                      get_label=lambda theTopic: theTopic.name,
+                                      widget=ListWidget(prefix_label=False),
+                                      option_widget=CheckboxInput())
+
+    submit = SubmitField('Create Position')
+
+
