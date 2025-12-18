@@ -10,73 +10,22 @@ from app import login
 
 @login.user_loader
 def load_user(id):
-    user = db.session.get(Student, int(id))
+    user = db.session.get(Author, int(id))
     if user:
         return user
-    return db.session.get(Faculty, int(id))
+    return db.session.get(Viewer, int(id))
 
-students_majors = sqla.Table(
-    'students_majors',
+posts_tags = sqla.Table(
+    'posts_tags',
     db.metadata,
-    sqla.Column('student_id', sqla.Integer, sqla.ForeignKey('student.id'), primary_key=True),
-    sqla.Column('major_id', sqla.Integer, sqla.ForeignKey('major.id'), primary_key=True)
-)
-
-students_research_topics = sqla.Table(
-    'students_research_topics',
-    db.metadata,
-    sqla.Column('student_id', sqla.Integer, sqla.ForeignKey('student.id'), primary_key=True),
-    sqla.Column('research_topic_name', sqla.String, sqla.ForeignKey('research_topic.name'), primary_key=True)
-)
-
-students_languages = sqla.Table(
-    'students_languages',
-    db.metadata,
-    sqla.Column('student_id', sqla.Integer, sqla.ForeignKey('student.id'), primary_key=True),
-    sqla.Column('language_name', sqla.String, sqla.ForeignKey('language.name'), primary_key=True)
-)
-
-positions_majors = sqla.Table(
-    'positions_majors',
-    db.metadata,
-    sqla.Column('position_id', sqla.Integer, sqla.ForeignKey('position.id'), primary_key=True),
-    sqla.Column('major_id', sqla.Integer, sqla.ForeignKey('major.id'), primary_key=True)
-)
-
-positions_research_topics = sqla.Table(
-    'positions_research_topics',
-    db.metadata,
-    sqla.Column('position_id', sqla.Integer, sqla.ForeignKey('position.id'), primary_key=True),
-    sqla.Column('research_topic_name', sqla.String, sqla.ForeignKey('research_topic.name'), primary_key=True)
-)
-
-positions_languages = sqla.Table(
-    'positions_languages',
-    db.metadata,
-    sqla.Column('position_id', sqla.Integer, sqla.ForeignKey('position.id'), primary_key=True),
-    sqla.Column('language_name', sqla.String, sqla.ForeignKey('language.name'), primary_key=True)
-)
-
-positions_courses = sqla.Table(
-    'positions_courses',
-    db.metadata,
-    sqla.Column('position_id', sqla.Integer, sqla.ForeignKey('position.id'), primary_key=True),
-    sqla.Column('course_id', sqla.Integer, sqla.ForeignKey('course.id'), primary_key=True)
-)
-
-course_majors = sqla.Table(
-    'course_majors',
-    db.metadata,
-    sqla.Column('course_id', sqla.Integer, sqla.ForeignKey('course.id'), primary_key=True),
-    sqla.Column('major_id', sqla.Integer, sqla.ForeignKey('major.id'), primary_key=True)
+    sqla.Column('post_id', sqla.Integer, sqla.ForeignKey('course.id'), primary_key=True),
+    sqla.Column('tag_id', sqla.Integer, sqla.ForeignKey('tag.id'), primary_key=True)
 )
 
 class User(db.Model, UserMixin):
     __abstract__ = True
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
     username: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64), unique=True, index=True)
-    firstname: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64))
-    lastname: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64))
     email: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(120), unique=True, index=True)
     password_hash: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(256))
 
@@ -90,151 +39,58 @@ class User(db.Model, UserMixin):
         return f'<User {self.username}>'
 
 
-class Student(User):
-    __tablename__ = 'student'
-    gpa: sqlo.Mapped[Optional[float]] = sqlo.mapped_column(sqla.Float)
+class Viewer(User):
+    __tablename__ = 'viewer'    
+    comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='viewer')
 
-    majors: sqlo.Mapped[List['Major']] = sqlo.relationship(secondary=students_majors, back_populates='students')
-    research_topics: sqlo.Mapped[List['ResearchTopic']] = sqlo.relationship(secondary=students_research_topics, back_populates='students')
-    languages: sqlo.Mapped[List['Language']] = sqlo.relationship(secondary=students_languages, back_populates='students')
+    def __repr__(self):
+        return f'<Viewer {self.username}>'
+
+
+class Author(User):
+    __tablename__ = 'author'
+    posts: sqlo.Mapped[List['Post']] = sqlo.relationship(back_populates='author')
+    comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='author')
+
+    def __repr__(self):
+        return f'<Author {self.username}>'
+
+
+class Post(db.Model):
+    __tablename__ = 'post'
+    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
+    name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
+    description: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
+    date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
     
-    recommendations: sqlo.Mapped[List['Recommendation']] = sqlo.relationship(back_populates='student')
-    applications: sqlo.Mapped[List['Application']] = sqlo.relationship(back_populates='student')
-    courses: sqlo.Mapped[List['CourseEnrollment']] = sqlo.relationship(back_populates='student')
+    author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='posts')
+    comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(secondary=positions_research_topics, back_populates='post')
 
     def __repr__(self):
-        return f'<Student {self.username}>'
+        return f'<Post {self.name}>'
 
-
-class Faculty(User):
-    __tablename__ = 'faculty'
-    positions: sqlo.Mapped[List['Position']] = sqlo.relationship(back_populates='faculty')
-    recommendations: sqlo.Mapped[List['Recommendation']] = sqlo.relationship(back_populates='faculty')
-
-    def __repr__(self):
-        return f'<Faculty {self.username}>'
-
-
-class Application(db.Model):
+class Comment(db.Model):
     __tablename__ = 'application'
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
     student_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('student.id'))
-    position_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('position.id'))
+    post_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('post.id'))
     statement: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(1500))
     status: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64), default="pending")
     created_at: sqlo.Mapped[datetime] = sqlo.mapped_column(
         sqla.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    student: sqlo.Mapped['Student'] = sqlo.relationship(back_populates='applications')
-    position: sqlo.Mapped['Position'] = sqlo.relationship(back_populates='applications')
-    recommendations: sqlo.Mapped[list['Recommendation']] = sqlo.relationship(back_populates='application')
+    viewer: sqlo.Mapped['Viewer'] = sqlo.relationship(back_populates='comments')
+    post: sqlo.Mapped['Post'] = sqlo.relationship(back_populates='comments')
 
     def __repr__(self):
-        return f'<Application {self.id}>'
+        return f'<Comment {self.id}>'
 
-
-class Post(db.Model):
-    __tablename__ = 'position'
-    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
-    description: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
-    date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
-    team_size: sqlo.Mapped[int] = sqlo.mapped_column(sqla.Integer, default=1)
-    min_gpa: sqlo.Mapped[Optional[float]] = sqlo.mapped_column(sqla.Float)
-    faculty_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('faculty.id'))
-    ref_required: sqlo.Mapped[bool] = sqlo.mapped_column(sqla.Boolean, default=False)
-
-    faculty: sqlo.Mapped['Faculty'] = sqlo.relationship(back_populates='positions')
-    applications: sqlo.Mapped[List['Application']] = sqlo.relationship(back_populates='position')
-    
-    majors: sqlo.Mapped[List['Major']] = sqlo.relationship(secondary=positions_majors, back_populates='positions')
-    research_topics: sqlo.Mapped[List['ResearchTopic']] = sqlo.relationship(secondary=positions_research_topics, back_populates='positions')
-    languages: sqlo.Mapped[List['Language']] = sqlo.relationship(secondary=positions_languages, back_populates='positions')
-    courses: sqlo.Mapped[List['Course']] = sqlo.relationship(secondary=positions_courses, back_populates='positions')
-
-    def __repr__(self):
-        return f'<Position {self.name}>'
-
-
-class Major(db.Model):
-    __tablename__ = 'major'
-    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100), unique=True)
-
-    students: sqlo.Mapped[List['Student']] = sqlo.relationship(secondary=students_majors, back_populates='majors')
-    positions: sqlo.Mapped[List['Position']] = sqlo.relationship(secondary=positions_majors, back_populates='majors')
-    courses: sqlo.Mapped[List['Course']] = sqlo.relationship(secondary=course_majors, back_populates='majors')
-
-    def __repr__(self):
-        return f'<Major {self.name}>'
-
-
-class Course(db.Model):
-    __tablename__ = 'course'
-    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
-    coursenum: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(10), index=True)
-
-    majors: sqlo.Mapped[List['Major']] = sqlo.relationship(secondary = course_majors, back_populates='courses')
-    students: sqlo.Mapped[List['CourseEnrollment']] = sqlo.relationship(back_populates='course')
-    positions: sqlo.Mapped[List['Position']] = sqlo.relationship(secondary=positions_courses, back_populates='courses')
-
-    def __repr__(self):
-        return f'<Course {self.name}>'
-
-
-class Recommendation(db.Model):
-    __tablename__ = 'recommendation'
-    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    student_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('student.id'))
-    faculty_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('faculty.id'))
-    application_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('application.id'))
-    status: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64), default="pending")
-
-    student: sqlo.Mapped['Student'] = sqlo.relationship(back_populates='recommendations')
-    faculty: sqlo.Mapped['Faculty'] = sqlo.relationship(back_populates='recommendations')
-    application: sqlo.Mapped['Application'] = sqlo.relationship(back_populates='recommendations')
-
-    def __repr__(self):
-        return f'<Recommendation {self.id}>'
-
-
-class CourseEnrollment(db.Model):
-    __tablename__ = 'course_enrollment'
-    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    student_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('student.id'))
-    course_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('course.id'))
-    grade: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(2))
-    instructor_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('faculty.id'))
-
-    student: sqlo.Mapped['Student'] = sqlo.relationship(back_populates='courses')
-    course: sqlo.Mapped['Course'] = sqlo.relationship(back_populates='students')
-    instructor: sqlo.Mapped['Faculty'] = sqlo.relationship()
-
-
-    def __repr__(self):
-        return f'<CourseEnrollment {self.id}>'
-
-
-class ResearchTopic(db.Model):
-    __tablename__ = 'research_topic'
+class Tag(db.Model):
+    __tablename__ = 'tag'
     name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100), primary_key=True)
 
-    students: sqlo.Mapped[List['Student']] = sqlo.relationship(secondary=students_research_topics, back_populates='research_topics')
-    positions: sqlo.Mapped[List['Position']] = sqlo.relationship(secondary=positions_research_topics, back_populates='research_topics')
+    posts: sqlo.Mapped[List['Post']] = sqlo.relationship(secondary=posts_tags, back_populates='tags')
 
     def __repr__(self):
-        return f'<ResearchTopic {self.name}>'
-
-
-class Language(db.Model):
-    __tablename__ = 'language'
-    name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100), primary_key=True)
-
-    students: sqlo.Mapped[List['Student']] = sqlo.relationship(secondary=students_languages, back_populates='languages')
-    positions: sqlo.Mapped[List['Position']] = sqlo.relationship(secondary=positions_languages, back_populates='languages')
-
-    def __repr__(self):
-        return f'<Language {self.name}>'
-
+        return f'<Tag {self.name}>'
