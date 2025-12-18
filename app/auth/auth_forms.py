@@ -42,15 +42,15 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Post')
 
     def validate_username(self, username):
-        query = sqla.select(Student).where(Student.username == username.data)
-        student = db.session.scalars(query).first()
-        if student is not None: 
+        query = sqla.select(Viewer).where(Viewer.username == username.data)
+        viewer = db.session.scalars(query).first()
+        if viewer is not None: 
             raise ValidationError('The username already exists! Please use a different username.')
      
     def validate_email(self, email):
-        query = sqla.select(Student).where(Student.email == email.data)
-        student = db.session.scalars(query).first()
-        if student is not None: 
+        query = sqla.select(Viewer).where(Viewer.email == email.data)
+        viewer = db.session.scalars(query).first()
+        if viewer is not None: 
             raise ValidationError('The username already exists! Please use a different email.')
                                   
 class LoginForm(FlaskForm):

@@ -2,51 +2,29 @@ from app import db
 from flask import render_template, flash, redirect, url_for
 import sqlalchemy as sqla
 
-from app.main.models import Student, CourseEnrollment
+from app.main.models import Viewer
 from app.auth.auth_forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from app.auth import auth_blueprint as auth
 
-@auth.route('/student/register', methods = ['GET', 'POST'])
+@auth.route('/viewer/register', methods = ['GET', 'POST'])
 def register():
     rform = RegistrationForm()
     if rform.validate_on_submit():
-        student = Student( username = rform.username.data,
+        viewer = Viewer( username = rform.username.data,
                            firstname = rform.firstname.data,
                            lastname = rform.lastname.data,
-                           email = rform.email.data,
-                           majors = rform.majors.data,
-                           gpa = rform.gpa.data,
-                           research_topics = rform.research_topics.data,
-                           languages = rform.languages.data
-                         )
-        print(student)
+                           email = rform.email.data)
+        print(viewer)
 
-        student.set_password(rform.password.data)
-        db.session.add(student)
+        viewer.set_password(rform.password.data)
+        db.session.add(viewer)
         db.session.commit()
 
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('main.index'))
     return render_template('register.html', form = rform)
 
-'''
-@auth.route('/faculty/register', methods = ['GET', 'POST'])
-def register():
-    rform = RegistrationForm()
-    if rform.validate_on_submit():
-        student = Student( username = rform.username.data,
-                           firstname = rform.firstname.data,
-                           lastname = rform.lastname.data,
-                           email = rform.email.data,
-                           address = rform.address.data)
-        student.set_password(rform.password.data)
-        db.session.add(student)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('main.index'))
-    return render_template('register.html', form = rform)
-'''
 
 @auth.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -57,13 +35,13 @@ def login():
 
     if lform.validate_on_submit():
 
-        query = sqla.select(Student).where(Student.username == lform.username.data)
-        student = db.session.scalars(query).first()
+        query = sqla.select(Viewer).where(Viewer.username == lform.username.data)
+        viewer = db.session.scalars(query).first()
 
-        if (student is None) or (student.check_password(lform.password.data) == False):
+        if (viewer is None) or (viewer.check_password(lform.password.data) == False):
             return redirect(url_for('auth.login'))
         
-        login_user(student, remember = lform.remember_me.data)
+        login_user(viewer, remember = lform.remember_me.data)
         flash('The user {} has successfully logged in!'.format(current_user.username))
         return redirect(url_for('main.index'))
     return render_template('login.html', form = lform)

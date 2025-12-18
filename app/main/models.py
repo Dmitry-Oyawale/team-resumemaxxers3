@@ -18,8 +18,8 @@ def load_user(id):
 posts_tags = sqla.Table(
     'posts_tags',
     db.metadata,
-    sqla.Column('post_id', sqla.Integer, sqla.ForeignKey('course.id'), primary_key=True),
-    sqla.Column('tag_id', sqla.Integer, sqla.ForeignKey('tag.id'), primary_key=True)
+    sqla.Column('post_id', sqla.Integer, sqla.ForeignKey('post.id'), primary_key=True),
+    sqla.Column('tag_name', sqla.String, sqla.ForeignKey('tag.name'), primary_key=True)
 )
 
 class User(db.Model, UserMixin):
@@ -62,9 +62,11 @@ class Post(db.Model):
     name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
     description: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
     date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
+    author_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('author.id'))
     
     author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='posts')
-    comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(secondary=positions_research_topics, back_populates='post')
+    comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='post')
+    tags: sqlo.Mapped[List['Tag']] = sqlo.relationship(secondary=posts_tags, back_populates='posts')
 
     def __repr__(self):
         return f'<Post {self.name}>'
@@ -72,16 +74,18 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__ = 'application'
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    student_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('student.id'))
+    viewer_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('viewer.id'))
     post_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('post.id'))
     statement: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(1500))
     status: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64), default="pending")
     created_at: sqlo.Mapped[datetime] = sqlo.mapped_column(
         sqla.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
+    author_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('author.id'))
 
     viewer: sqlo.Mapped['Viewer'] = sqlo.relationship(back_populates='comments')
     post: sqlo.Mapped['Post'] = sqlo.relationship(back_populates='comments')
+    author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='comments')
 
     def __repr__(self):
         return f'<Comment {self.id}>'
