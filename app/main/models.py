@@ -134,13 +134,12 @@ class Application(db.Model):
         return f'<Application {self.id}>'
 
 
-class Position(db.Model):
+class Post(db.Model):
     __tablename__ = 'position'
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
     name: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(100))
     description: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
-    start_date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
-    end_date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
+    date: sqlo.Mapped[Optional[datetime]] = sqlo.mapped_column(default=lambda: datetime.now(timezone.utc))
     team_size: sqlo.Mapped[int] = sqlo.mapped_column(sqla.Integer, default=1)
     min_gpa: sqlo.Mapped[Optional[float]] = sqlo.mapped_column(sqla.Float)
     faculty_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('faculty.id'))
