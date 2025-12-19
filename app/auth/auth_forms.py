@@ -44,3 +44,6 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
+class VerificationForm(FlaskForm):
+    code = StringField('Verification Code', validators=[DataRequired()])
+    submit = SubmitField('Verify')

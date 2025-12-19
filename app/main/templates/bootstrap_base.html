@@ -34,6 +34,12 @@
                   </li>
                 {% endif %}
               {% endif %}
+              {% if not current_user.verified and not current_user.is_anonymous %}
+                    <li class="nav-item ms-2 ">
+                        <td><a class="nav-link {% if request.endpoint == 'auth.verify' %}active{% endif %}"
+                          aria-current="page" href="{{ url_for('auth.verify') }}">Verify</a></td>
+                    </li>
+              {% endif %}
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
               {% if current_user.is_anonymous %}

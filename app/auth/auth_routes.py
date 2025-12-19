@@ -3,9 +3,12 @@ from flask import render_template, flash, redirect, url_for
 import sqlalchemy as sqla
 
 from app.main.models import Viewer, Author
-from app.auth.auth_forms import RegistrationForm, LoginForm
+from app.auth.auth_forms import RegistrationForm, LoginForm, VerificationForm
 from flask_login import login_user, current_user, logout_user, login_required
 from app.auth import auth_blueprint as auth
+from app.auth.email import send_email
+
+import hashlib
 
 @auth.route('/viewer/register', methods = ['GET', 'POST'])
 def register():
@@ -13,14 +16,28 @@ def register():
     if rform.validate_on_submit():
         viewer = Viewer( username = rform.username.data,
                            email = rform.email.data)
-        print(viewer)
+
+        vercode_unhashed = viewer.email + "SALT!!!"
+        subject = "Your Verification Code"
+        message = f"""
+        Greetings, {rform.username.data}!
+
+        Please find your verification code below:
+
+        **{hashlib.sha256(vercode_unhashed.encode('utf-8')).hexdigest()}**
+
+        Best wishes,
+        Dmitry-Oyawale
+        """
+
+        send_email(rform.email.data, subject, message)
 
         viewer.set_password(rform.password.data)
         db.session.add(viewer)
         db.session.commit()
 
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('main.index'))
+        flash('Congratulations, you are now a registered user! Please check for a verification code')
+        return redirect(url_for('auth.verify'))
     return render_template('register.html', form = rform)
 
 
@@ -55,5 +72,41 @@ def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
-#@auth.route('/faculty/verify/<token>', methods = ['GET'])
-#@auth.route('/faculty/login/sso', methods = ['GET'])
+@auth.route('/auth/new_verification', methods=['GET', 'POST'])
+@login_required
+def resend_verification():
+    vercode_unhashed = current_user.email + "SALT!!!"
+    subject = "Your Verification Code"
+    message = f"""
+            Greetings, {current_user.username}!
+
+            Please find your verification code below:
+
+            **{hashlib.sha256(vercode_unhashed.encode('utf-8')).hexdigest()}**
+
+            Best wishes,
+            Dmitry-Oyawale
+            """
+
+    send_email(current_user.email, subject, message)
+
+    flash(
+        'Please check your email for a verification code.')
+    return redirect(url_for('auth.verify'))
+
+@auth.route('/auth/email_verifications/', methods=['GET', 'POST'])
+@login_required
+def verify():
+    form = VerificationForm()
+    if form.validate_on_submit():
+        vercode_unhashed = current_user.email + "SALT!!!"
+        verification_code = hashlib.sha256(vercode_unhashed.encode('utf-8')).hexdigest()
+        print(verification_code)
+        if form.code.data == verification_code:
+            current_user.verified = True
+            db.session.commit()
+            flash('Your account has been verified!')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid verification code.')
+    return render_template('verify.html', form=form)
