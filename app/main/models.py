@@ -68,6 +68,7 @@ class Author(User):
     __tablename__ = 'author'
     posts: sqlo.Mapped[List['Post']] = sqlo.relationship(back_populates='author')
     comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='author')
+    about: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
 
     @property
     def role(self):
@@ -102,6 +103,7 @@ class Comment(db.Model):
     viewer_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('viewer.id'))
     post_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('post.id'))
     statement: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(1500))
+    likes: sqlo.Mapped[int] = sqlo.mapped_column(sqla.Integer, default=0)
     status: sqlo.Mapped[str] = sqlo.mapped_column(sqla.String(64), default="pending")
     created_at: sqlo.Mapped[datetime] = sqlo.mapped_column(
         sqla.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)

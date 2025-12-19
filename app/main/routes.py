@@ -56,10 +56,14 @@ def create_post(author_id):
     return render_template('create_post.html', title='Create Post', form=cform, user=author)
 
 @main.route('/post/<post_id>/view', methods=['GET'])
-@login_required
-def view_post(post_id):
+def read_more(post_id):
     post=Post.query.get_or_404(post_id)
     return render_template('post.html', post=post)
+
+@main.route('/author/<author_id>/view', methods=['GET'])
+def view_about(author_id):
+    author = db.session.get(Author, author_id)
+    return render_template('about.html', author=author)
 
 @main.route('/author/<post_id>/settings', methods=['GET', 'POST'])
 @login_required
@@ -100,8 +104,47 @@ def delete_position(post_id):
     return redirect(url_for('main.index'))
 
 @main.route('/post/<post_id>/like', methods=['GET', 'POST'])
-@login_required
 def like_post(post_id):
     post=Post.query.get_or_404(post_id)
     post.likes = post.likes + 1
+
+@main.route('/author/about/edit', methods=['GET', 'POST'])
+@login_required
+@role_required("author")
+def edit_about():
+    form = EditAbout()
+    if form.validate_on_submit():
+
+        if form.email.data != current_user.email:
+            existing_author = Author.query.filter(
+                Author.email == form.email.data,
+                Author.id != current_user.id
+            ).first()
+
+            existing_viewer = Viewer.query.filter_by(email=form.email.data).first()
+
+            if existing_viewer or existing_author:
+                form.email.errors.append("This email is already in use. Please choose another one.")
+                return render_template(
+                    'edit_about.html',
+                    title='Edit About',
+                    form=form
+                )
+
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.about = form.about.data
+        current_user.set_password(form.password.data)
+
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('main.view_about', author_id=current_user.id))
+
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.about.data = current_user.about
+
+    return render_template('edit_about.html', title='Edit About',
+                           form=form)
 

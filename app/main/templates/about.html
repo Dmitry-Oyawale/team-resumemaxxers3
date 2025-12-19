@@ -1,0 +1,29 @@
+{% extends "bootstrap_base.html" %}
+
+{% block content %}
+
+<main class="container my-4">
+
+    <h2 class="text-center mb-4">About</h2>
+
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+
+                    <h4 class="card-title">
+                        {{ author.username }}
+                    </h4>
+                    <p class="text-muted mb-2">{{ author.email }}</p>
+                    <p class="text-muted mb-2">{{ author.about or "No bio yet." }}</p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

@@ -34,3 +34,8 @@ class EditPost(FlaskForm):
                                       option_widget=CheckboxInput())
 
     submit = SubmitField('Create Post')
+
+class EditAbout(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    about = StringField('Text', validators=[DataRequired()])
