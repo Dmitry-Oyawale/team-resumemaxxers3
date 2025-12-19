@@ -11,14 +11,14 @@
                 {{ form.hidden_tag() }}
 
                 <div class="d-flex flex-column filter-label">
-                    <label class="mb-1 me-2" for="{{ form.languages.id }}">Tags</label>
+                    <label class="mb-1 me-2" for="{{ form.tags.id }}">Tags</label>
                     {{ form.tags(multiple='multiple', size="1", class_="form-select form-select-sm compact-multi") }}
                 </div>
 
                 <div class="d-flex align-items-end">
                     {{ form.Refresh(class_="btn btn-add btn-sm") }}
                 </div>
-                
+
             </form>
         </div>
     </div>

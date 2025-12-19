@@ -67,16 +67,39 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                         <div class="col-md-6 mb-3">
-                            <h6 class="fw-bold">Tags</h6>
+                            <h6 class="fw-bold">Comments</h6>
                             <ul>
                                 {% for comment in post.comments %}
-                                    {% if comment.status == 'approved' or comment.author_id %}
-                                        <li>{{ comment.name }}</li>
-                                        <li>{{ comment.statement }}</li>
+                                    {% if comment.author_id %}
+                                        <h5>From:{{ comment.author.username }}</h1>
+                                        <p>{{ comment.created_at }}</p>
+                                        <p>{{ comment.statement }}</p>
+                                    {% elif comment.status=='approved' %}
+                                        <h5>From:{{ comment.viewer.username }}</h5>
+                                        <p>{{ comment.created_at.date() }}</p>
+                                        <p>{{ comment.statement }}</p>
                                     {% endif %}
+
+
                                 {% else %}
                                     <li class="text-muted">None specified</li>
                                 {% endfor %}
+                                {% if current_user.role=='author' %}
+                                    <h4>Waiting for approval</h4>
+                                    {% for comment in post.comments %}
+                                        {% if comment.viewer_id and not comment.status=='approved' %}
+                                            <h5>From:{{ comment.author.username }}</h5>
+                                            <p>{{ comment.created_at }}</p>
+                                            <p>{{ comment.statement }}</p>
+                                            <a href="{{ url_for('main.approve_comment',
+                                                    comment_id=comment.id) }}"
+                                                class="btn btn-add btn-sm">Approve</a>
+                                            <a href="{{ url_for('main.delete_comment',
+                                                    comment_id=comment.id) }}"
+                                                class="btn btn-add btn-sm">Delete</a>
+                                        {% endif %}
+                                    {% endfor %}   
+                                {% endif %}
                             </ul>
                         </div>
 

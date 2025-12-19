@@ -11,8 +11,8 @@ from app.main import main_blueprint as main
 from datetime import datetime
 from app.auth.role_required import role_required
 
-@main.route('/', methods=['GET'])
-@main.route('/index', methods=['GET'])
+@main.route('/', methods=['GET', 'POST'])
+@main.route('/index', methods=['GET', 'POST'])
 def index():
     form = SortForm()
 
@@ -25,7 +25,7 @@ def index():
             Posts = Posts.join(Post.tags).where(Tag.name.in_(form.tags.data)).distinct()
 
     PostsA = db.session.scalars(Posts).all()
-    return render_template('base.html', title="Course List", posts = PostsA)
+    return render_template('base.html', title="Course List", form=form, posts = PostsA)
 
 @main.route('/author/<author_id>/post', methods=['GET', 'POST'])
 @login_required
@@ -244,3 +244,29 @@ def edit_tags():
                 print(err)
 
     return render_template('edit_tags.html', title='Edit tags', form=form, dform=dform)
+
+@main.route('/author/comment/<comment_id>/approval', methods=['GET', 'POST'])
+@login_required
+@role_required("author")
+def approve_comment(comment_id):
+    comment = db.session.get(Comment, comment_id)
+    post = db.session.get(Post, comment.post_id)
+    
+    comment.status = "approved"
+    
+    db.session.commit()
+
+    flash("Comment approved")
+    return redirect(url_for('main.read_more', post_id = post.id))
+
+@main.route('/author/comment/<comment_id>/deletion', methods=['GET', 'POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = db.session.get(Comment, comment_id)
+    post = db.session.get(Post, comment.post_id)
+        
+    db.session.delete(comment)
+    db.session.commit()
+
+    flash("Comment deleted")
+    return redirect(url_for('main.read_more', post_id = post.id))
