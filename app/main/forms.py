@@ -40,4 +40,8 @@ class EditAbout(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
     about = StringField('Text', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Save Changes')
+
+class CommentForm(FlaskForm):
+    statement = StringField('Text', validators=[DataRequired()])
+    submit = SubmitField('Add Comment')

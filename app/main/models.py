@@ -116,7 +116,16 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comment'
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
-    viewer_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('viewer.id'))
+
+    viewer_id: sqlo.Mapped[Optional[int]] = sqlo.mapped_column(
+        sqla.ForeignKey('viewer.id'),
+        nullable=True
+    )
+    author_id: sqlo.Mapped[Optional[int]] = sqlo.mapped_column(
+        sqla.ForeignKey('author.id'),
+        nullable=True
+    )
+
     post_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('post.id'))
     statement: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(1500))
     likes: sqlo.Mapped[int] = sqlo.mapped_column(sqla.Integer, default=0)
@@ -124,16 +133,17 @@ class Comment(db.Model):
     created_at: sqlo.Mapped[datetime] = sqlo.mapped_column(
         sqla.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
-    author_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('author.id'))
 
-    viewer: sqlo.Mapped['Viewer'] = sqlo.relationship(back_populates='comments')
+    viewer: sqlo.Mapped[Optional['Viewer']] = sqlo.relationship(back_populates='comments')
+    author: sqlo.Mapped[Optional['Author']] = sqlo.relationship(back_populates='comments')
+    viewercommentlikes: sqlo.Mapped[List['ViewerCommentLike']] = sqlo.relationship(
+    back_populates='comment'
+    )
+    authorcommentlikes: sqlo.Mapped[List['AuthorCommentLike']] = sqlo.relationship(
+        back_populates='comment'
+    )
     post: sqlo.Mapped['Post'] = sqlo.relationship(back_populates='comments')
-    author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='comments')
-    viewercommentlikes: sqlo.Mapped[List['ViewerCommentLike']] = sqlo.relationship(back_populates='comment')
-    authorcommentlikes: sqlo.Mapped[List['AuthorCommentLike']] = sqlo.relationship(back_populates='comment')
 
-    def __repr__(self):
-        return f'<Comment {self.id}>'
 
 class Tag(db.Model):
     __tablename__ = 'tag'

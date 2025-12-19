@@ -58,7 +58,8 @@ def create_post(author_id):
 @main.route('/post/<post_id>/view', methods=['GET'])
 def read_more(post_id):
     post=Post.query.get_or_404(post_id)
-    return render_template('post.html', post=post)
+    form = CommentForm()
+    return render_template('post.html', post=post, form=form)
 
 @main.route('/author/<author_id>/view', methods=['GET'])
 def view_about(author_id):
@@ -161,3 +162,22 @@ def edit_about():
     return render_template('edit_about.html', title='Edit About',
                            form=form)
 
+@main.route('/post/<post_id>/comments', methods=['POST'])
+@login_required
+def leave_comment(post_id):
+    post = Post.query.get_or_404(post_id)
+    form = CommentForm()
+
+    if form.validate_on_submit():
+        comment = Comment(post_id=post.id, statement=form.statement.data)
+
+        if current_user.role == 'viewer':
+            comment.viewer_id = current_user.id
+        else:  
+            comment.author_id = current_user.id
+
+        db.session.add(comment)
+        db.session.commit()
+        flash("Comment submitted, waiting for approval!")
+
+    return redirect(url_for('main.read_more', post_id=post.id))
