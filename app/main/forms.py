@@ -61,3 +61,7 @@ class DeleteTagForm(FlaskForm):
 class SortForm(FlaskForm):
     tags = SelectMultipleField('Tags', choices=[], coerce=str)
     Refresh = SubmitField('Refresh')
+
+class EditComment(FlaskForm):
+    statement = StringField('Text', validators=[DataRequired()])
+    submit = SubmitField('Edit Comment')

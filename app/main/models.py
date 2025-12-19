@@ -144,6 +144,21 @@ class Comment(db.Model):
     )
     post: sqlo.Mapped['Post'] = sqlo.relationship(back_populates='comments')
 
+    @property
+    def liked_by_current_user(self):
+        if not current_user.is_authenticated:
+            return False
+        if current_user.role=='viewer':
+            return ViewerCommentLike.query.filter_by(
+                viewer_id=current_user.id,
+                comment_id=self.id
+            ).first() is not None
+        else: 
+            return AuthorCommentLike.query.filter_by(
+                author_id=current_user.id,
+                comment_id=self.id
+            ).first() is not None
+
 
 class Tag(db.Model):
     __tablename__ = 'tag'

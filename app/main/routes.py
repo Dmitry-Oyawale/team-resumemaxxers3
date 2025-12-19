@@ -2,7 +2,7 @@ from app import db
 from flask import render_template, flash, redirect, url_for, request, jsonify
 import sqlalchemy as sqla
 
-from app.main.models import Viewer, Author, Post, Comment, PostLike, Tag
+from app.main.models import Viewer, Author, Post, Comment, PostLike, Tag, ViewerCommentLike, AuthorCommentLike
 from app.main.forms import *
 from flask_login import current_user, login_required
 from sqlalchemy import text
@@ -116,7 +116,6 @@ def delete_post(post_id):
 @main.route('/post/<post_id>/like', methods=['POST'])
 @login_required
 def toggle_post_like(post_id):
-    post = Post.query.get_or_404(post_id)
 
     like = PostLike.query.filter_by(
         viewer_id=current_user.id,
@@ -130,6 +129,34 @@ def toggle_post_like(post_id):
 
     db.session.commit()
     return redirect(url_for('main.read_more', post_id=post_id))
+
+@main.route('/comment/<comment_id>/like', methods=['POST'])
+@login_required
+def toggle_comment_like(comment_id):
+
+    comment = db.session.get(Comment, comment_id) 
+
+    if current_user.role=='viewer':
+        like = ViewerCommentLike.query.filter_by(
+            viewer_id=current_user.id,
+            comment_id=comment_id
+        ).first()
+    elif current_user.role=='author':
+        like = AuthorCommentLike.query.filter_by(
+            author_id=current_user.id,
+            comment_id=comment_id
+        ).first()
+
+    if like:
+        db.session.delete(like)  
+    else:
+        if current_user.role=='viewer':
+            db.session.add(ViewerCommentLike(viewer_id=current_user.id, comment_id=comment_id)) 
+        elif current_user.role=='author':
+            db.session.add(AuthorCommentLike(author_id=current_user.id, comment_id=comment_id)) 
+
+    db.session.commit()
+    return redirect(url_for('main.read_more', post_id=comment.post_id))
 
 @main.route('/author/about/edit', methods=['GET', 'POST'])
 @login_required
@@ -187,7 +214,11 @@ def leave_comment(post_id):
 
         db.session.add(comment)
         db.session.commit()
-        flash("Comment submitted, waiting for approval!")
+
+        if current_user.role == 'viewer':
+            flash("Comment submitted, waiting for approval!")
+        else:  
+            flash("Comment submitted!")
 
     return redirect(url_for('main.read_more', post_id=post.id))
 
@@ -259,7 +290,7 @@ def approve_comment(comment_id):
     flash("Comment approved")
     return redirect(url_for('main.read_more', post_id = post.id))
 
-@main.route('/author/comment/<comment_id>/deletion', methods=['GET', 'POST'])
+@main.route('/comment/<comment_id>/deletion', methods=['GET', 'POST'])
 @login_required
 def delete_comment(comment_id):
     comment = db.session.get(Comment, comment_id)
@@ -270,3 +301,22 @@ def delete_comment(comment_id):
 
     flash("Comment deleted")
     return redirect(url_for('main.read_more', post_id = post.id))
+
+@main.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_comment(comment_id):
+    comment = db.session.get(Comment, comment_id)
+    post = db.session.get(Post, comment.post_id)
+    
+    form = EditComment()
+
+    if form.validate_on_submit():
+        comment.statement = form.statement.data
+        db.session.commit()
+        flash("Comment edited")
+        return redirect(url_for('main.read_more', post_id = post.id))
+    
+    elif request.method == "GET":
+        form.statement.data = comment.statement
+
+    return render_template('edit_comment.html', title='Edit comment', form=form, comment=comment)

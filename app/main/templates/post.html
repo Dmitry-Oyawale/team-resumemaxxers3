@@ -74,14 +74,43 @@
                                         <h5>From:{{ comment.author.username }}</h1>
                                         <p>{{ comment.created_at }}</p>
                                         <p>{{ comment.statement }}</p>
+                                        <form method="POST" action="{{ url_for('main.toggle_comment_like', comment_id=comment.id) }}">
+                                            <button
+                                                type="submit"
+                                                class="btn {{ 'btn-secondary' if comment.liked_by_current_user else 'btn-add' }}">
+                                                {{ 'Unlike' if comment.liked_by_current_user else 'Like this Position' }}
+                                            </button>
+                                        </form>
+
+                                        <div class="mt-2">
+                                            {{ comment.viewercommentlikes|length + comment.authorcommentlikes|length }} likes
+                                        </div>
                                     {% elif comment.status=='approved' %}
                                         <h5>From:{{ comment.viewer.username }}</h5>
                                         <p>{{ comment.created_at.date() }}</p>
                                         <p>{{ comment.statement }}</p>
+                                        <form method="POST" action="{{ url_for('main.toggle_comment_like', comment_id=comment.id) }}">
+                                            <button
+                                                type="submit"
+                                                class="btn {{ 'btn-secondary' if comment.liked_by_current_user else 'btn-add' }}">
+                                                {{ 'Unlike' if comment.liked_by_current_user else 'Like this Position' }}
+                                            </button>
+                                        </form>
+
+                                        <div class="mt-2">
+                                            {{ comment.viewercommentlikes|length + comment.authorcommentlikes|length }} likes
+                                        </div>
                                     {% endif %}
+                                    {% if comment.viewer_id and current_user.is_authenticated and current_user.role == 'viewer'
+                                        and comment.viewer_id == current_user.id %}
+                                        <a href="{{ url_for('main.edit_comment', comment_id=comment.id) }}" class="btn btn-add btn-sm">Edit comment</a>
+                                        {% endif %}
 
-
-                                {% else %}
+                                        {% if comment.author_id and current_user.is_authenticated and current_user.role == 'author'
+                                            and comment.author_id == current_user.id %}
+                                        <a href="{{ url_for('main.edit_comment', comment_id=comment.id) }}" class="btn btn-add btn-sm">Edit comment</a>
+                                        {% endif %}
+                                    {% else %}
                                     <li class="text-muted">None specified</li>
                                 {% endfor %}
                                 {% if current_user.role=='author' %}
