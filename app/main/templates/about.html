@@ -24,6 +24,14 @@
 
     </div>
 
+    <div class="text-center mt-4">
+        {% if current_user.is_authenticated and current_user.role == 'author' %}
+            <a href="{{ url_for('main.edit_about') }}"
+               class="btn btn-pending">Edit Profile</a>
+               
+        {% endif %}
+    </div>
+
 </main>
 
 {% endblock %}

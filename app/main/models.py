@@ -7,6 +7,7 @@ import sqlalchemy.orm as sqlo
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
+from flask_login import current_user
 
 @login.user_loader
 def load_user(id):
@@ -52,6 +53,8 @@ class User(db.Model, UserMixin):
 class Viewer(User):
     __tablename__ = 'viewer'    
     comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='viewer')
+    postlikes: sqlo.Mapped[List['PostLike']] = sqlo.relationship(back_populates='viewer')
+    commentlikes: sqlo.Mapped[List['ViewerCommentLike']] = sqlo.relationship(back_populates='viewer')
 
     @property
     def role(self):
@@ -66,9 +69,12 @@ class Viewer(User):
 
 class Author(User):
     __tablename__ = 'author'
+    about: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
+
     posts: sqlo.Mapped[List['Post']] = sqlo.relationship(back_populates='author')
     comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='author')
-    about: sqlo.Mapped[Optional[str]] = sqlo.mapped_column(sqla.String(512))
+
+    authorcommentlikes: sqlo.Mapped[List['AuthorCommentLike']] = sqlo.relationship(back_populates='author')
 
     @property
     def role(self):
@@ -93,12 +99,22 @@ class Post(db.Model):
     author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='posts')
     comments: sqlo.Mapped[List['Comment']] = sqlo.relationship(back_populates='post')
     tags: sqlo.Mapped[List['Tag']] = sqlo.relationship(secondary=posts_tags, back_populates='posts')
+    postlikes: sqlo.Mapped[List['PostLike']] = sqlo.relationship(back_populates='post')
 
     def __repr__(self):
         return f'<Post {self.name}>'
+    
+    @property
+    def liked_by_current_user(self):
+        if not current_user.is_authenticated:
+            return False
+        return PostLike.query.filter_by(
+            viewer_id=current_user.id,
+            post_id=self.id
+        ).first() is not None
 
 class Comment(db.Model):
-    __tablename__ = 'application'
+    __tablename__ = 'comment'
     id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
     viewer_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('viewer.id'))
     post_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('post.id'))
@@ -113,6 +129,8 @@ class Comment(db.Model):
     viewer: sqlo.Mapped['Viewer'] = sqlo.relationship(back_populates='comments')
     post: sqlo.Mapped['Post'] = sqlo.relationship(back_populates='comments')
     author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='comments')
+    viewercommentlikes: sqlo.Mapped[List['ViewerCommentLike']] = sqlo.relationship(back_populates='comment')
+    authorcommentlikes: sqlo.Mapped[List['AuthorCommentLike']] = sqlo.relationship(back_populates='comment')
 
     def __repr__(self):
         return f'<Comment {self.id}>'
@@ -125,3 +143,39 @@ class Tag(db.Model):
 
     def __repr__(self):
         return f'<Tag {self.name}>'
+    
+class PostLike(db.Model):
+    __tablename__ = 'post_like'
+    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
+    viewer_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('viewer.id'))
+    post_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('post.id'))
+
+    viewer: sqlo.Mapped['Viewer'] = sqlo.relationship(back_populates='postlikes')
+    post: sqlo.Mapped['Post'] = sqlo.relationship(back_populates='postlikes')
+
+    def __repr__(self):
+        return f'<PostLike {self.id}>'
+    
+class ViewerCommentLike(db.Model):
+    __tablename__ = 'viewer_comment_like'
+    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
+    viewer_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('viewer.id'))
+    comment_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('comment.id'))
+
+    viewer: sqlo.Mapped['Viewer'] = sqlo.relationship(back_populates='commentlikes')
+    comment: sqlo.Mapped['Comment'] = sqlo.relationship(back_populates='viewercommentlikes')
+
+    def __repr__(self):
+        return f'<ViewerCommentLike {self.id}>'
+    
+class AuthorCommentLike(db.Model):
+    __tablename__ = 'author_comment_like'
+    id: sqlo.Mapped[int] = sqlo.mapped_column(primary_key=True)
+    author_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('author.id'))
+    comment_id: sqlo.Mapped[int] = sqlo.mapped_column(sqla.ForeignKey('comment.id'))
+
+    author: sqlo.Mapped['Author'] = sqlo.relationship(back_populates='authorcommentlikes')
+    comment: sqlo.Mapped['Comment'] = sqlo.relationship(back_populates='authorcommentlikes')
+
+    def __repr__(self):
+        return f'<AuthorCommentLike {self.id}>'

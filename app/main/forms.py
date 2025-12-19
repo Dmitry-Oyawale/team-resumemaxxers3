@@ -33,9 +33,11 @@ class EditPost(FlaskForm):
                                       widget=ListWidget(prefix_label=False),
                                       option_widget=CheckboxInput())
 
-    submit = SubmitField('Create Post')
+    submit = SubmitField('Save Changes')
 
 class EditAbout(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     about = StringField('Text', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField('Password', validators=[DataRequired(), EqualTo('password')])

@@ -2,7 +2,7 @@ from app import db
 from flask import render_template, flash, redirect, url_for, request, jsonify
 import sqlalchemy as sqla
 
-from app.main.models import Viewer, Author, Post, Comment
+from app.main.models import Viewer, Author, Post, Comment, PostLike
 from app.main.forms import *
 from flask_login import current_user, login_required
 from sqlalchemy import text
@@ -68,7 +68,7 @@ def view_about(author_id):
 @main.route('/author/<post_id>/settings', methods=['GET', 'POST'])
 @login_required
 @role_required("author")
-def edit_position(post_id):
+def edit_post(post_id):
     form = EditPost()
     post=Post.query.get_or_404(post_id)
     if form.validate_on_submit():
@@ -78,7 +78,7 @@ def edit_position(post_id):
         post.tags = form.tags.data
         db.session.commit()
         flash('Your changes have been saved.')
-        return redirect(url_for('main.view_post', post_id=post.id))
+        return redirect(url_for('main.read_more', post_id=post.id))
     elif request.method == 'GET':
         form.name.data = post.name
         form.description.data = post.description
@@ -89,7 +89,7 @@ def edit_position(post_id):
 @main.route('/author/<post_id>/deletion', methods=['GET', 'POST'])
 @login_required
 @role_required("author")
-def delete_position(post_id):
+def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     
     if current_user.role != 'author' or post.author_id != current_user.id:
@@ -103,10 +103,23 @@ def delete_position(post_id):
     flash('Post deleted successfully!', 'success')
     return redirect(url_for('main.index'))
 
-@main.route('/post/<post_id>/like', methods=['GET', 'POST'])
-def like_post(post_id):
-    post=Post.query.get_or_404(post_id)
-    post.likes = post.likes + 1
+@main.route('/post/<post_id>/like', methods=['POST'])
+@login_required
+def toggle_post_like(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    like = PostLike.query.filter_by(
+        viewer_id=current_user.id,
+        post_id=post_id
+    ).first()
+
+    if like:
+        db.session.delete(like)  
+    else:
+        db.session.add(PostLike(viewer_id=current_user.id, post_id=post_id)) 
+
+    db.session.commit()
+    return redirect(url_for('main.read_more', post_id=post_id))
 
 @main.route('/author/about/edit', methods=['GET', 'POST'])
 @login_required
