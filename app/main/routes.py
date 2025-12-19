@@ -2,7 +2,7 @@ from app import db
 from flask import render_template, flash, redirect, url_for, request, jsonify
 import sqlalchemy as sqla
 
-from app.main.models import Viewer, Author, Post, Comment, PostLike
+from app.main.models import Viewer, Author, Post, Comment, PostLike, Tag
 from app.main.forms import *
 from flask_login import current_user, login_required
 from sqlalchemy import text
@@ -14,9 +14,18 @@ from app.auth.role_required import role_required
 @main.route('/', methods=['GET'])
 @main.route('/index', methods=['GET'])
 def index():
-    #courses = db.session.scalars(sqla.select(Course))
-    posts = db.session.scalars(sqla.select(Post))
-    return render_template('base.html', title="Course List", posts = posts)
+    form = SortForm()
+
+    tags = db.session.scalars(sqla.select(Tag).distinct()).all()
+    form.tags.choices = [(t.name, t.name) for t in tags]
+
+    Posts = sqla.select(Post)
+    if form.validate_on_submit(): 
+        if form.tags.data and len(form.tags.data) > 0:
+            Posts = Posts.join(Post.tags).where(Tag.name.in_(form.tags.data)).distinct()
+
+    PostsA = db.session.scalars(Posts).all()
+    return render_template('base.html', title="Course List", posts = PostsA)
 
 @main.route('/author/<author_id>/post', methods=['GET', 'POST'])
 @login_required
